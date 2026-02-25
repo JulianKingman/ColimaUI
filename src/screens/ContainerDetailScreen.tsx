@@ -15,6 +15,7 @@ import { IconButton } from '../components/IconButton';
 import { TabBar } from '../components/TabBar';
 import { Badge } from '../components/Badge';
 import { colors, fonts, spacing, radii, statusColor } from '../theme/colors';
+import { TerminalView } from '../components/TerminalView';
 
 interface Props {
   container: Container;
@@ -153,7 +154,13 @@ export function ContainerDetailScreen({ container, onBack, onRefresh }: Props) {
           <LogsView logs={logs} loading={logsLoading} />
         )}
         {activeTab === 'inspect' && <InspectView inspect={inspect} />}
-        {activeTab === 'terminal' && <TerminalPlaceholder name={name} />}
+        {activeTab === 'terminal' && (
+          isRunning ? (
+            <TerminalView containerId={container.Id} containerName={name} />
+          ) : (
+            <TerminalPlaceholder name={name} />
+          )
+        )}
         {activeTab === 'stats' && <StatsPlaceholder />}
       </View>
     </View>
@@ -319,26 +326,11 @@ function InspectView({ inspect }: { inspect: ContainerInspect | null }) {
 function TerminalPlaceholder({ name }: { name: string }) {
   return (
     <View style={styles.terminalContainer}>
-      <View style={styles.terminalHeader}>
-        <Text style={styles.terminalTitle}>Terminal - {name}</Text>
-        <Badge label="SwiftTerm" color={colors.warning} bgColor={colors.warning + '20'} />
-      </View>
       <View style={styles.terminalBody}>
-        <Text style={styles.terminalPrompt}>
-          $ docker exec -it {name} /bin/sh
-        </Text>
         <Text style={styles.terminalHint}>
-          {'\n'}Terminal functionality requires the SwiftTerm native module.
-          {'\n'}This will be implemented as a native macOS component.
-          {'\n'}
-          {'\n'}Planned features:
-          {'\n'}  - Interactive shell via docker exec
-          {'\n'}  - Full terminal emulation (xterm-256color)
-          {'\n'}  - Copy/paste support
-          {'\n'}  - Scrollback buffer
-          {'\n'}  - Custom font size
+          Container "{name}" is not running.{'\n'}
+          Start the container to open a terminal session.
         </Text>
-        <Text style={styles.terminalCursor}>_</Text>
       </View>
     </View>
   );

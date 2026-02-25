@@ -1,0 +1,39 @@
+diff --git a/node_modules/react-native-svg/apple/Elements/RNSVGSvgView.mm b/node_modules/react-native-svg/apple/Elements/RNSVGSvgView.mm
+index d03d5c0..addc5d7 100644
+--- a/node_modules/react-native-svg/apple/Elements/RNSVGSvgView.mm
++++ b/node_modules/react-native-svg/apple/Elements/RNSVGSvgView.mm
+@@ -44,6 +44,16 @@ + (void)load
+   [super load];
+ }
+ 
++#if TARGET_OS_OSX
++// react-native-macos 0.81+ Fabric forces wantsUpdateLayer=YES on all
++// RCTViewComponentView subclasses, which suppresses drawRect: calls
++// that SVG rendering depends on. Override to restore draw-based rendering.
++- (BOOL)wantsUpdateLayer
++{
++  return NO;
++}
++#endif
++
+ - (instancetype)initWithFrame:(CGRect)frame
+ {
+   if (self = [super initWithFrame:frame]) {
+diff --git a/node_modules/react-native-svg/apple/RNSVGNode.mm b/node_modules/react-native-svg/apple/RNSVGNode.mm
+index 4b32143..4d2ec6f 100644
+--- a/node_modules/react-native-svg/apple/RNSVGNode.mm
++++ b/node_modules/react-native-svg/apple/RNSVGNode.mm
+@@ -32,6 +32,13 @@ @implementation RNSVGNode {
+   CGFloat canvasDiagonal;
+ }
+ 
++#if TARGET_OS_OSX
++- (BOOL)wantsUpdateLayer
++{
++  return NO;
++}
++#endif
++
+ CGFloat const RNSVG_M_SQRT1_2l = (CGFloat)0.707106781186547524400844362104849039;
+ CGFloat const RNSVG_DEFAULT_FONT_SIZE = 12;
+ 

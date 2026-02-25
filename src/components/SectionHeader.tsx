@@ -1,22 +1,38 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { Icon } from './Icon';
+import { IconButton } from './IconButton';
 import { colors, spacing } from '../theme/colors';
 
 interface Props {
   title: string;
-  count?: number;
   collapsed?: boolean;
   onToggle?: () => void;
+  hasRunning?: boolean;
+  onStopAll?: () => void;
+  onRestartAll?: () => void;
+  onStartAll?: () => void;
+  onRemoveAll?: () => void;
+  actionLoading?: boolean;
 }
 
-export function SectionHeader({ title, count, collapsed, onToggle }: Props) {
+export function SectionHeader({
+  title,
+  collapsed,
+  onToggle,
+  hasRunning,
+  onStopAll,
+  onRestartAll,
+  onStartAll,
+  onRemoveAll,
+  actionLoading,
+}: Props) {
   return (
-    <TouchableOpacity
-      onPress={onToggle}
-      activeOpacity={0.7}
-      style={styles.container}>
-      <View style={styles.left}>
+    <View style={styles.container}>
+      <TouchableOpacity
+        onPress={onToggle}
+        activeOpacity={0.7}
+        style={styles.left}>
         {onToggle && (
           <View style={styles.chevronContainer}>
             {collapsed ? (
@@ -27,11 +43,56 @@ export function SectionHeader({ title, count, collapsed, onToggle }: Props) {
           </View>
         )}
         <Text style={styles.title}>{title}</Text>
+      </TouchableOpacity>
+      <View style={styles.actions}>
+        {hasRunning ? (
+          <>
+            {onStopAll && (
+              <IconButton
+                label=""
+                onPress={onStopAll}
+                variant="danger"
+                small
+                disabled={actionLoading}
+                icon={<Icon name="stop" color={actionLoading ? colors.textMuted : colors.error} size={14} />}
+              />
+            )}
+            {onRestartAll && (
+              <IconButton
+                label=""
+                onPress={onRestartAll}
+                small
+                disabled={actionLoading}
+                icon={<Icon name="restart" color={actionLoading ? colors.textMuted : colors.textPrimary} size={14} />}
+              />
+            )}
+          </>
+        ) : (
+          <>
+            {onStartAll && (
+              <IconButton
+                label=""
+                onPress={onStartAll}
+                variant="success"
+                small
+                disabled={actionLoading}
+                icon={<Icon name="play" color={actionLoading ? colors.textMuted : colors.success} size={14} />}
+              />
+            )}
+            {onRemoveAll && (
+              <IconButton
+                label=""
+                onPress={onRemoveAll}
+                variant="danger"
+                small
+                disabled={actionLoading}
+                icon={<Icon name="trash" color={actionLoading ? colors.textMuted : colors.error} size={14} />}
+              />
+            )}
+          </>
+        )}
       </View>
-      {count !== undefined && (
-        <Text style={styles.count}>{count}</Text>
-      )}
-    </TouchableOpacity>
+    </View>
   );
 }
 
@@ -47,6 +108,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
+    flex: 1,
+  },
+  actions: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
   },
   chevronContainer: {
     width: 14,
@@ -58,9 +125,5 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
-  },
-  count: {
-    color: colors.textMuted,
-    fontSize: 11,
   },
 });

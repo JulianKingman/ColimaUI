@@ -18,7 +18,9 @@ export function SearchBar({
 }: Props) {
   return (
     <View style={styles.container}>
-      <Icon name="search" color={colors.textMuted} size={16} />
+      <View style={styles.iconWrap}>
+        <Icon name="search" color={colors.textMuted} size={14} />
+      </View>
       <TextInput
         style={styles.input}
         value={value}
@@ -46,8 +48,14 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.border,
     paddingHorizontal: spacing.md,
-    height: 32,
+    paddingVertical: spacing.xs,
     gap: spacing.sm,
+  },
+  iconWrap: {
+    width: 16,
+    height: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   input: {
     flex: 1,
@@ -55,7 +63,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontFamily: fonts.system,
     padding: 0,
-    height: 30,
+    margin: 0,
   },
   count: {
     color: colors.textMuted,

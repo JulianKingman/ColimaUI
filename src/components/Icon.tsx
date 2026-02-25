@@ -1,48 +1,69 @@
 import React from 'react';
-import { Text } from 'react-native';
+import {
+  Cube,
+  Stack,
+  Database,
+  Broom,
+  Hexagon,
+  Play,
+  Stop,
+  ArrowCounterClockwise,
+  Trash,
+  ArrowLeft,
+  MagnifyingGlass,
+  CaretRight,
+  CaretDown,
+  Warning,
+  HardDrives,
+  Ghost,
+  Terminal,
+  Rows,
+  Info,
+  ChartBar,
+} from 'phosphor-react-native';
+import type { IconProps as PhosphorIconProps } from 'phosphor-react-native';
 
-// Icon names mapped to macOS-friendly characters
-const iconMap: Record<string, string> = {
+const iconMap: Record<string, React.ComponentType<PhosphorIconProps>> = {
   // Navigation
-  'cube': '▣',
-  'stack': '◎',
-  'database': '▤',
-  'broom': '⌫',
-  'hexagon': '⬡',
+  'cube': Cube,
+  'stack': Stack,
+  'database': Database,
+  'broom': Broom,
+  'hexagon': Hexagon,
 
   // Actions
-  'play': '▶',
-  'stop': '■',
-  'restart': '↻',
-  'trash': '✕',
-  'arrow-left': '←',
-  'search': '⌕',
-  'caret-right': '▸',
-  'caret-down': '▾',
+  'play': Play,
+  'stop': Stop,
+  'restart': ArrowCounterClockwise,
+  'trash': Trash,
+  'arrow-left': ArrowLeft,
+  'search': MagnifyingGlass,
+  'caret-right': CaretRight,
+  'caret-down': CaretDown,
 
   // Status/Info
-  'warning': '⚠',
-  'hard-drives': '⚙',
-  'ghost': '∅',
+  'warning': Warning,
+  'hard-drives': HardDrives,
+  'ghost': Ghost,
 
   // Detail tabs
-  'terminal': '>_',
-  'logs': '≡',
-  'info': 'ⓘ',
-  'chart': '▊',
+  'terminal': Terminal,
+  'logs': Rows,
+  'info': Info,
+  'chart': ChartBar,
 };
 
 interface Props {
   name: string;
   size?: number;
   color?: string;
+  weight?: 'thin' | 'light' | 'regular' | 'bold' | 'fill' | 'duotone';
 }
 
-export function Icon({ name, size = 16, color = '#e8e2d6' }: Props) {
-  const char = iconMap[name] ?? '?';
-  return (
-    <Text style={{ fontSize: size * 0.85, color, lineHeight: size, textAlign: 'center', width: size }}>
-      {char}
-    </Text>
-  );
+export function Icon({ name, size = 16, color = '#e8e2d6', weight = 'regular' }: Props) {
+  const IconComponent = iconMap[name];
+  if (!IconComponent) {
+    return null;
+  }
+  return <IconComponent size={size} color={color} weight={weight} />;
 }

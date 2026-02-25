@@ -1,6 +1,9 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { Icon } from './Icon';
+
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const appIcon = require('../assets/app-icon.png');
 import type { NavigationScreen } from '../types/docker';
 import { colors, spacing, radii, fonts } from '../theme/colors';
 
@@ -50,7 +53,7 @@ export function Sidebar({
     <View style={styles.container}>
       {/* Logo area */}
       <View style={styles.logoArea}>
-        <Icon name="hexagon" color={colors.accent} size={24} />
+        <Image source={appIcon} style={styles.logoIcon} />
         <View>
           <Text style={styles.logoText}>ColimaUI</Text>
           <Text style={styles.logoSubtext}>Docker Manager</Text>
@@ -129,6 +132,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.lg,
     paddingBottom: spacing.lg,
     gap: spacing.sm,
+  },
+  logoIcon: {
+    width: 28,
+    height: 28,
+    borderRadius: 6,
   },
   logoText: {
     color: colors.textPrimary,

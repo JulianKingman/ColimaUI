@@ -18,6 +18,7 @@ export function ContainersScreen({ onSelectContainer }: Props) {
   const [search, setSearch] = useState('');
   const [collapsedSections, setCollapsedSections] = useState<Record<string, boolean>>({});
   const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [groupActionLoading, setGroupActionLoading] = useState<string | null>(null);
 
   const toggleSection = useCallback((name: string) => {
     setCollapsedSections((prev) => ({ ...prev, [name]: !prev[name] }));
@@ -31,6 +32,24 @@ export function ContainersScreen({ onSelectContainer }: Props) {
         await refresh();
       } finally {
         setActionLoading(null);
+      }
+    },
+    [refresh],
+  );
+
+  const handleGroupAction = useCallback(
+    async (
+      action: (id: string) => Promise<boolean>,
+      groupContainers: Container[],
+      groupName: string,
+    ) => {
+      if (groupContainers.length === 0) {return;}
+      setGroupActionLoading(groupName);
+      try {
+        await Promise.all(groupContainers.map((c) => action(c.Id)));
+        await refresh();
+      } finally {
+        setGroupActionLoading(null);
       }
     },
     [refresh],
@@ -95,9 +114,38 @@ export function ContainersScreen({ onSelectContainer }: Props) {
             <View key={project.name}>
               <SectionHeader
                 title={project.name}
-                count={filtered.length}
                 collapsed={collapsed}
                 onToggle={() => toggleSection(project.name)}
+                hasRunning={projectRunning > 0}
+                onStopAll={() =>
+                  handleGroupAction(
+                    (id) => dockerService.stopContainer(id),
+                    filtered,
+                    project.name,
+                  )
+                }
+                onRestartAll={() =>
+                  handleGroupAction(
+                    (id) => dockerService.restartContainer(id),
+                    filtered,
+                    project.name,
+                  )
+                }
+                onStartAll={() =>
+                  handleGroupAction(
+                    (id) => dockerService.startContainer(id),
+                    filtered,
+                    project.name,
+                  )
+                }
+                onRemoveAll={() =>
+                  handleGroupAction(
+                    (id) => dockerService.removeContainer(id),
+                    filtered,
+                    project.name,
+                  )
+                }
+                actionLoading={groupActionLoading === project.name}
               />
               {!collapsed && (
                 <View style={styles.projectBadge}>
@@ -157,9 +205,38 @@ export function ContainersScreen({ onSelectContainer }: Props) {
           <View>
             <SectionHeader
               title="Standalone"
-              count={filterContainers(standalone).length}
               collapsed={collapsedSections._standalone}
               onToggle={() => toggleSection('_standalone')}
+              hasRunning={filterContainers(standalone).some((c) => c.State === 'running')}
+              onStopAll={() =>
+                handleGroupAction(
+                  (id) => dockerService.stopContainer(id),
+                  filterContainers(standalone),
+                  '_standalone',
+                )
+              }
+              onRestartAll={() =>
+                handleGroupAction(
+                  (id) => dockerService.restartContainer(id),
+                  filterContainers(standalone),
+                  '_standalone',
+                )
+              }
+              onStartAll={() =>
+                handleGroupAction(
+                  (id) => dockerService.startContainer(id),
+                  filterContainers(standalone),
+                  '_standalone',
+                )
+              }
+              onRemoveAll={() =>
+                handleGroupAction(
+                  (id) => dockerService.removeContainer(id),
+                  filterContainers(standalone),
+                  '_standalone',
+                )
+              }
+              actionLoading={groupActionLoading === '_standalone'}
             />
             {!collapsedSections._standalone &&
               filterContainers(standalone).map((container) => (

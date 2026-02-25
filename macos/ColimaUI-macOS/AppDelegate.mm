@@ -25,6 +25,7 @@
     if (window) {
       window.titlebarAppearsTransparent = YES;
       window.titleVisibility = NSWindowTitleHidden;
+      window.styleMask |= NSWindowStyleMaskFullSizeContentView;
       window.backgroundColor = [NSColor colorWithRed:0.10 green:0.09 blue:0.08 alpha:1.0];
     }
   });

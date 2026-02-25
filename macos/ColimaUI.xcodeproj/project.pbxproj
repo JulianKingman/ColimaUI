@@ -14,6 +14,11 @@
 		514201552437B4B40078DB4F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 514201532437B4B40078DB4F /* Main.storyboard */; };
 		514201582437B4B40078DB4F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 514201572437B4B40078DB4F /* main.m */; };
 		82EAB29DBD7C98797EF39D0F /* libPods-ColimaUI-macOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FF2D74566A976FBA2493D062 /* libPods-ColimaUI-macOS.a */; };
+		D00B110100000001 /* DockerBridge.mm in Sources */ = {isa = PBXBuildFile; fileRef = D00B110100000010 /* DockerBridge.mm */; };
+		D00B110100000002 /* TerminalHostView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B110100000012 /* TerminalHostView.swift */; };
+		D00B110100000003 /* TerminalHostViewManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D00B110100000013 /* TerminalHostViewManager.swift */; };
+		D00B110100000004 /* TerminalHostViewManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D00B110100000014 /* TerminalHostViewManager.m */; };
+		D00B110100000005 /* SwiftTerm in Frameworks */ = {isa = PBXBuildFile; productRef = D00B110100000030 /* SwiftTerm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +33,12 @@
 		514201592437B4B40078DB4F /* ColimaUI.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ColimaUI.entitlements; sourceTree = "<group>"; };
 		78256F6BF46AC8C947E2EE47 /* Pods-ColimaUI-macOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColimaUI-macOS.debug.xcconfig"; path = "Target Support Files/Pods-ColimaUI-macOS/Pods-ColimaUI-macOS.debug.xcconfig"; sourceTree = "<group>"; };
 		8BF7AE4B60F876AFF2DF6DC4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		D00B110100000010 /* DockerBridge.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = DockerBridge.mm; sourceTree = "<group>"; };
+		D00B110100000011 /* DockerBridge.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DockerBridge.h; sourceTree = "<group>"; };
+		D00B110100000012 /* TerminalHostView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalHostView.swift; sourceTree = "<group>"; };
+		D00B110100000013 /* TerminalHostViewManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TerminalHostViewManager.swift; sourceTree = "<group>"; };
+		D00B110100000014 /* TerminalHostViewManager.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TerminalHostViewManager.m; sourceTree = "<group>"; };
+		D00B110100000015 /* ColimaUI-macOS-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "ColimaUI-macOS-Bridging-Header.h"; sourceTree = "<group>"; };
 		EA593A1CAE55908C82BCBDF0 /* Pods-ColimaUI-macOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ColimaUI-macOS.release.xcconfig"; path = "Target Support Files/Pods-ColimaUI-macOS/Pods-ColimaUI-macOS.release.xcconfig"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		FF2D74566A976FBA2493D062 /* libPods-ColimaUI-macOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ColimaUI-macOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -46,6 +57,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				82EAB29DBD7C98797EF39D0F /* libPods-ColimaUI-macOS.a in Frameworks */,
+				D00B110100000005 /* SwiftTerm in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -76,6 +88,12 @@
 			children = (
 				5142014B2437B4B30078DB4F /* AppDelegate.h */,
 				5142014C2437B4B30078DB4F /* AppDelegate.mm */,
+				D00B110100000011 /* DockerBridge.h */,
+				D00B110100000010 /* DockerBridge.mm */,
+				D00B110100000012 /* TerminalHostView.swift */,
+				D00B110100000013 /* TerminalHostViewManager.swift */,
+				D00B110100000014 /* TerminalHostViewManager.m */,
+				D00B110100000015 /* ColimaUI-macOS-Bridging-Header.h */,
 				514201512437B4B40078DB4F /* Assets.xcassets */,
 				514201532437B4B40078DB4F /* Main.storyboard */,
 				514201562437B4B40078DB4F /* Info.plist */,
@@ -154,6 +172,9 @@
 			dependencies = (
 			);
 			name = "ColimaUI-macOS";
+			packageProductDependencies = (
+				D00B110100000030 /* SwiftTerm */,
+			);
 			productName = ColimaUI;
 			productReference = 514201492437B4B30078DB4F /* ColimaUI.app */;
 			productType = "com.apple.product-type.application";
@@ -184,6 +205,9 @@
 				Base,
 			);
 			mainGroup = 83CBB9F61A601CBA00E9B192;
+			packageReferences = (
+				D00B110100000020 /* XCRemoteSwiftPackageReference "SwiftTerm" */,
+			);
 			productRefGroup = 83CBBA001A601CBA00E9B192 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -332,6 +356,10 @@
 			files = (
 				514201582437B4B40078DB4F /* main.m in Sources */,
 				5142014D2437B4B30078DB4F /* AppDelegate.mm in Sources */,
+				D00B110100000001 /* DockerBridge.mm in Sources */,
+				D00B110100000002 /* TerminalHostView.swift in Sources */,
+				D00B110100000003 /* TerminalHostViewManager.swift in Sources */,
+				D00B110100000004 /* TerminalHostViewManager.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,6 +425,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "ColimaUI-macOS/ColimaUI.entitlements";
+				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				DEAD_CODE_STRIPPING = NO;
 				INFOPLIST_FILE = "ColimaUI-macos/Info.plist";
@@ -410,6 +440,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = ColimaUI;
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "ColimaUI-macOS/ColimaUI-macOS-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
 			};
@@ -421,6 +452,8 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_ENTITLEMENTS = "ColimaUI-macOS/ColimaUI.entitlements";
+				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
 				INFOPLIST_FILE = "ColimaUI-macos/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -433,6 +466,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = ColimaUI;
 				SDKROOT = macosx;
+				SWIFT_OBJC_BRIDGING_HEADER = "ColimaUI-macOS/ColimaUI-macOS-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
 			};
 			name = Release;
@@ -586,6 +620,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		D00B110100000020 /* XCRemoteSwiftPackageReference "SwiftTerm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/migueldeicaza/SwiftTerm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		D00B110100000030 /* SwiftTerm */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D00B110100000020 /* XCRemoteSwiftPackageReference "SwiftTerm" */;
+			productName = SwiftTerm;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 83CBB9F71A601CBA00E9B192 /* Project object */;
 }
