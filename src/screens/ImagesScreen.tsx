@@ -10,6 +10,7 @@ import {
 import { useImages } from '../hooks/useImages';
 import { dockerService } from '../services/docker';
 import { SearchBar } from '../components/SearchBar';
+import { Icon } from '../components/Icon';
 import { IconButton } from '../components/IconButton';
 import { Badge } from '../components/Badge';
 import { EmptyState } from '../components/EmptyState';
@@ -132,11 +133,12 @@ export function ImagesScreen() {
               </Text>
               <View style={[styles.colActions]}>
                 <IconButton
-                  label="Remove"
+                  label=""
                   onPress={() => handleRemove(image.Id)}
                   variant="danger"
                   small
                   disabled={removingId === image.Id || image.Containers > 0}
+                  icon={<Icon name="trash" color={removingId === image.Id || image.Containers > 0 ? colors.textMuted : colors.error} size={14} />}
                 />
               </View>
             </View>

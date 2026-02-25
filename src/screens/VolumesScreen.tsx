@@ -9,6 +9,7 @@ import {
 import { useVolumes } from '../hooks/useVolumes';
 import { dockerService } from '../services/docker';
 import { SearchBar } from '../components/SearchBar';
+import { Icon } from '../components/Icon';
 import { IconButton } from '../components/IconButton';
 import { Badge } from '../components/Badge';
 import { EmptyState } from '../components/EmptyState';
@@ -133,13 +134,12 @@ export function VolumesScreen() {
               </View>
               <View style={[styles.colActions]}>
                 <IconButton
-                  label="Remove"
+                  label=""
                   onPress={() => handleRemove(volume.Name)}
                   variant="danger"
                   small
-                  disabled={
-                    removingName === volume.Name || !!inUse
-                  }
+                  disabled={removingName === volume.Name || !!inUse}
+                  icon={<Icon name="trash" color={removingName === volume.Name || !!inUse ? colors.textMuted : colors.error} size={14} />}
                 />
               </View>
             </View>

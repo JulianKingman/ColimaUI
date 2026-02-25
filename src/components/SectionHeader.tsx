@@ -8,6 +8,8 @@ interface Props {
   title: string;
   collapsed?: boolean;
   onToggle?: () => void;
+  runningCount?: number;
+  totalCount?: number;
   hasRunning?: boolean;
   onStopAll?: () => void;
   onRestartAll?: () => void;
@@ -20,6 +22,8 @@ export function SectionHeader({
   title,
   collapsed,
   onToggle,
+  runningCount = 0,
+  totalCount = 0,
   hasRunning,
   onStopAll,
   onRestartAll,
@@ -28,11 +32,12 @@ export function SectionHeader({
   actionLoading,
 }: Props) {
   return (
-    <View style={styles.container}>
-      <TouchableOpacity
-        onPress={onToggle}
-        activeOpacity={0.7}
-        style={styles.left}>
+    <TouchableOpacity
+      onPress={onToggle}
+      activeOpacity={0.7}
+      style={styles.container}>
+      {/* Left: chevron + title + status bar + count */}
+      <View style={styles.left}>
         {onToggle && (
           <View style={styles.chevronContainer}>
             {collapsed ? (
@@ -43,7 +48,24 @@ export function SectionHeader({
           </View>
         )}
         <Text style={styles.title}>{title}</Text>
-      </TouchableOpacity>
+        {totalCount > 0 && (
+          <>
+            <View style={styles.statusBar}>
+              <View
+                style={[
+                  styles.statusFill,
+                  { width: `${(runningCount / totalCount) * 100}%` as any },
+                ]}
+              />
+            </View>
+            <Text style={styles.statusText}>
+              {runningCount}/{totalCount}
+            </Text>
+          </>
+        )}
+      </View>
+
+      {/* Right: action buttons */}
       <View style={styles.actions}>
         {hasRunning ? (
           <>
@@ -92,7 +114,7 @@ export function SectionHeader({
           </>
         )}
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -125,5 +147,21 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 0.8,
+  },
+  statusBar: {
+    width: 40,
+    height: 3,
+    backgroundColor: colors.border,
+    borderRadius: 2,
+    overflow: 'hidden',
+  },
+  statusFill: {
+    height: 3,
+    backgroundColor: colors.statusRunning,
+    borderRadius: 2,
+  },
+  statusText: {
+    color: colors.textMuted,
+    fontSize: 10,
   },
 });

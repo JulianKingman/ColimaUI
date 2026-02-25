@@ -116,6 +116,8 @@ export function ContainersScreen({ onSelectContainer }: Props) {
                 title={project.name}
                 collapsed={collapsed}
                 onToggle={() => toggleSection(project.name)}
+                runningCount={projectRunning}
+                totalCount={filtered.length}
                 hasRunning={projectRunning > 0}
                 onStopAll={() =>
                   handleGroupAction(
@@ -147,23 +149,6 @@ export function ContainersScreen({ onSelectContainer }: Props) {
                 }
                 actionLoading={groupActionLoading === project.name}
               />
-              {!collapsed && (
-                <View style={styles.projectBadge}>
-                  <View style={styles.projectStatusBar}>
-                    <View
-                      style={[
-                        styles.projectStatusFill,
-                        {
-                          width: `${(projectRunning / filtered.length) * 100}%` as any,
-                        },
-                      ]}
-                    />
-                  </View>
-                  <Text style={styles.projectStatusText}>
-                    {projectRunning}/{filtered.length} running
-                  </Text>
-                </View>
-              )}
               {!collapsed &&
                 filtered.map((container) => (
                   <ContainerRow
@@ -201,13 +186,19 @@ export function ContainersScreen({ onSelectContainer }: Props) {
         })}
 
         {/* Standalone containers */}
-        {filterContainers(standalone).length > 0 && (
+        {(() => {
+          const filteredStandalone = filterContainers(standalone);
+          const standaloneRunning = filteredStandalone.filter((c) => c.State === 'running').length;
+          if (filteredStandalone.length === 0) {return null;}
+          return (
           <View>
             <SectionHeader
               title="Standalone"
               collapsed={collapsedSections._standalone}
               onToggle={() => toggleSection('_standalone')}
-              hasRunning={filterContainers(standalone).some((c) => c.State === 'running')}
+              runningCount={standaloneRunning}
+              totalCount={filteredStandalone.length}
+              hasRunning={standaloneRunning > 0}
               onStopAll={() =>
                 handleGroupAction(
                   (id) => dockerService.stopContainer(id),
@@ -271,7 +262,8 @@ export function ContainersScreen({ onSelectContainer }: Props) {
                 />
               ))}
           </View>
-        )}
+          );
+        })()}
 
         {totalFiltered === 0 && (
           <EmptyState
@@ -326,29 +318,6 @@ const styles = StyleSheet.create({
   },
   list: {
     flex: 1,
-  },
-  projectBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: spacing.lg,
-    paddingBottom: spacing.sm,
-    gap: spacing.sm,
-  },
-  projectStatusBar: {
-    width: 60,
-    height: 3,
-    backgroundColor: colors.border,
-    borderRadius: 2,
-    overflow: 'hidden',
-  },
-  projectStatusFill: {
-    height: 3,
-    backgroundColor: colors.statusRunning,
-    borderRadius: 2,
-  },
-  projectStatusText: {
-    color: colors.textMuted,
-    fontSize: 10,
   },
   bottomSpacer: {
     height: spacing.xxl,
