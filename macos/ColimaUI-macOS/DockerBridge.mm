@@ -131,6 +131,9 @@ RCT_EXPORT_MODULE();
 - (instancetype)init {
   if (self = [super init]) {
     _socketPath = defaultSocketPath();
+    RCTLogInfo(@"DockerBridge: NSHomeDirectory = %@", NSHomeDirectory());
+    RCTLogInfo(@"DockerBridge: socket path = %@", _socketPath);
+    RCTLogInfo(@"DockerBridge: socket exists = %d", [[NSFileManager defaultManager] fileExistsAtPath:_socketPath]);
   }
   return self;
 }
@@ -369,6 +372,45 @@ RCT_EXPORT_METHOD(pruneVolumes:(RCTPromiseResolveBlock)resolve reject:(RCTPromis
 
 RCT_EXPORT_METHOD(pruneBuildCache:(RCTPromiseResolveBlock)resolve reject:(RCTPromiseRejectBlock)reject) {
   [self dockerPOST:@"/build/prune" body:nil resolve:resolve reject:reject];
+}
+
+RCT_EXPORT_METHOD(runCommand:(NSString *)command
+                         args:(NSArray<NSString *> *)args
+                      resolve:(RCTPromiseResolveBlock)resolve
+                       reject:(RCTPromiseRejectBlock)reject) {
+  dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    @try {
+      NSTask *task = [[NSTask alloc] init];
+      task.executableURL = [NSURL fileURLWithPath:command];
+      task.arguments = args ?: @[];
+
+      NSPipe *stdoutPipe = [NSPipe pipe];
+      NSPipe *stderrPipe = [NSPipe pipe];
+      task.standardOutput = stdoutPipe;
+      task.standardError = stderrPipe;
+
+      NSError *launchError = nil;
+      [task launchAndReturnError:&launchError];
+      if (launchError) {
+        reject(@"LAUNCH_ERR", launchError.localizedDescription, launchError);
+        return;
+      }
+      [task waitUntilExit];
+
+      NSData *stdoutData = [stdoutPipe.fileHandleForReading readDataToEndOfFile];
+      NSData *stderrData = [stderrPipe.fileHandleForReading readDataToEndOfFile];
+      NSString *stdoutStr = [[NSString alloc] initWithData:stdoutData encoding:NSUTF8StringEncoding] ?: @"";
+      NSString *stderrStr = [[NSString alloc] initWithData:stderrData encoding:NSUTF8StringEncoding] ?: @"";
+
+      resolve(@{
+        @"exitCode": @(task.terminationStatus),
+        @"stdout": stdoutStr,
+        @"stderr": stderrStr,
+      });
+    } @catch (NSException *exception) {
+      reject(@"TASK_ERR", exception.reason ?: @"Failed to run command", nil);
+    }
+  });
 }
 
 @end

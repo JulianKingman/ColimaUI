@@ -229,4 +229,19 @@ function normalizeBuildCache(raw: any): BuildCache {
   };
 }
 
+export async function startColima(): Promise<{ exitCode: number; stdout: string; stderr: string }> {
+  const candidates = ['/opt/homebrew/bin/colima', '/usr/local/bin/colima'];
+  for (const path of candidates) {
+    try {
+      const result = await DockerBridge.runCommand(path, ['start']);
+      return result;
+    } catch (e: any) {
+      // If the binary doesn't exist, try the next candidate
+      if (e.code === 'LAUNCH_ERR') { continue; }
+      throw e;
+    }
+  }
+  throw new Error('Colima binary not found');
+}
+
 export const dockerService = new DockerService();

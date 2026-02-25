@@ -41,6 +41,7 @@ interface Props {
   onNavigate: (screen: NavigationScreen) => void;
   containerCount?: number;
   runningCount?: number;
+  connected?: null | boolean;
 }
 
 export function Sidebar({
@@ -48,7 +49,14 @@ export function Sidebar({
   onNavigate,
   containerCount = 0,
   runningCount = 0,
+  connected,
 }: Props) {
+  const statusDotColor =
+    connected === null
+      ? colors.warning
+      : connected
+        ? colors.statusRunning
+        : colors.statusStopped;
   return (
     <View style={styles.container}>
       {/* Logo area */}
@@ -62,9 +70,13 @@ export function Sidebar({
 
       {/* Status pill */}
       <View style={styles.statusPill}>
-        <View style={styles.statusDot} />
+        <View style={[styles.statusDot, { backgroundColor: statusDotColor }]} />
         <Text style={styles.statusText}>
-          {runningCount} running / {containerCount} total
+          {connected === false
+            ? 'Disconnected'
+            : connected === null
+              ? 'Checking...'
+              : `${runningCount} running / ${containerCount} total`}
         </Text>
       </View>
 
@@ -163,7 +175,6 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: 3,
-    backgroundColor: colors.statusRunning,
   },
   statusText: {
     color: colors.textSecondary,

@@ -1,9 +1,10 @@
-import React, { useState, useCallback, useEffect } from 'react';
-import { View, StyleSheet } from 'react-native';
+import React, { useState, useCallback } from 'react';
+import { View, ActivityIndicator, StyleSheet } from 'react-native';
 import type { NavigationScreen, Container } from './src/types/docker';
 import { useContainers } from './src/hooks/useContainers';
-import { dockerService } from './src/services/docker';
+import { useDockerConnection } from './src/hooks/useDockerConnection';
 import { Sidebar } from './src/components/Sidebar';
+import { ConnectionOverlay } from './src/components/ConnectionOverlay';
 import { ContainersScreen } from './src/screens/ContainersScreen';
 import { ContainerDetailScreen } from './src/screens/ContainerDetailScreen';
 import { ImagesScreen } from './src/screens/ImagesScreen';
@@ -14,15 +15,8 @@ import { colors } from './src/theme/colors';
 function App() {
   const [activeScreen, setActiveScreen] = useState<NavigationScreen>('containers');
   const [selectedContainer, setSelectedContainer] = useState<Container | null>(null);
+  const { connected, starting, startError, startColima } = useDockerConnection();
   const { containers, refresh } = useContainers();
-
-  useEffect(() => {
-    dockerService.ping().then(({ connected, socketPath }) => {
-      console.log(connected
-        ? `Docker connected via ${socketPath}`
-        : `Docker daemon unreachable at ${socketPath}`);
-    }).catch((e) => console.warn('Docker ping failed:', e));
-  }, []);
 
   const runningCount = containers.filter((c) => c.State === 'running').length;
 
@@ -52,9 +46,20 @@ function App() {
         onNavigate={handleNavigate}
         containerCount={containers.length}
         runningCount={runningCount}
+        connected={connected}
       />
       <View style={styles.content}>
-        {showDetail ? (
+        {connected === null ? (
+          <View style={styles.centerContent}>
+            <ActivityIndicator color={colors.accent} />
+          </View>
+        ) : connected === false ? (
+          <ConnectionOverlay
+            starting={starting}
+            startError={startError}
+            onStartColima={startColima}
+          />
+        ) : showDetail ? (
           <ContainerDetailScreen
             container={selectedContainer}
             onBack={handleBackFromDetail}
@@ -89,6 +94,11 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+  },
+  centerContent: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   screenVisible: {
     flex: 1,
